@@ -82,7 +82,7 @@ const TranslatorApp = ({ onClose }) => {
         <i className="fa-solid fa-chevron-down"></i>
       </button>
       <div className="w-full">
-        <textarea className="textarea"></textarea>
+        <textarea className="textarea text-[#b6f492]"></textarea>
       </div>
     </div>
   );
