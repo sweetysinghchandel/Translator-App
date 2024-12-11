@@ -1,19 +1,19 @@
 import { languages } from "../languagesData";
 import { useState } from "react";
 const TranslatorApp = ({ onClose }) => {
-  const [selectedLanguageFrom, setSelectedLanguageFrom] = useState("en");
-  const [selectedLanguageTo, setSelectedLanguageTo] = useState("en");
+  const [selectedLanguageFrom, setSelectedLanguageFrom] = useState('en');
+  const [selectedLanguageTo, setSelectedLanguageTo] = useState('en');
   const [showLanguages, setShowLanguages] = useState(false);
   const [currentLanguageSelection, setCurrentLanguageSelection] =
     useState(null);
-  const [inputText, setInputText] = useState("");
-  const [translatedText, setTranslatedText] = useState("");
+  const [inputText, setInputText] = useState('');
+  const [translatedText, setTranslatedText] = useState('');
   const handleLanguageClick = (type) => {
     setCurrentLanguageSelection(type);
     setShowLanguages(true);
   };
   const handleLanguagesSelect = (languageCode) => {
-    if (currentLanguageSelection === "from") {
+    if (currentLanguageSelection === 'from') {
       setSelectedLanguageFrom(languageCode);
     } else {
       setSelectedLanguageTo(languageCode);
@@ -24,8 +24,10 @@ const TranslatorApp = ({ onClose }) => {
     setSelectedLanguageFrom(selectedLanguageTo);
     setSelectedLanguageTo(selectedLanguageFrom);
   };
+
   const handleInputChange = (e) =>{
     const value =e.target.value
+    setInputText(value)
   }
   const handleTranslate = async () => {
     if (!inputText.trim()) {
@@ -33,7 +35,7 @@ const TranslatorApp = ({ onClose }) => {
       return;
     }
     const response = await fetch(
-      'https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText,)}&langpair=${selectedLanguageFrom}|{selectedLanguageTo},'
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText,)}&langpair=${selectedLanguageFrom}|${selectedLanguageTo},`
     );
     const data = await response.json()
     setTranslatedText(data.responseData.translatedText)
@@ -75,14 +77,14 @@ const TranslatorApp = ({ onClose }) => {
         </div>
       )}
       <div className="w-full relative">
-        <textarea className="textarea text-gray-200"></textarea>
+        <textarea className="textarea text-gray-200" value={inputText || ""} onChange={handleInputChange}></textarea>
         <div className="absolute bottom-2 right-4 text-gray-400">0/200</div>
       </div>
       <button className="w-12 h-12 bg-gradient-to-r from-[#b6f492] to-[#338b93] rounded-full text-2l text-gray-600 flex justify-center items-center active:translate-y-[1px]" onClick={handleTranslate}>
         <i className="fa-solid fa-chevron-down"></i>
       </button>
       <div className="w-full">
-        <textarea className="textarea text-[#b6f492]"></textarea>
+        <textarea className="textarea text-[#b6f492]" value={translatedText || "" }readOnly></textarea>
       </div>
     </div>
   );
