@@ -8,6 +8,8 @@ const TranslatorApp = ({ onClose }) => {
     useState(null);
   const [inputText, setInputText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
+  const [charCount , setCharCount] = useState(0)
+  const maxChars = 200
   const handleLanguageClick = (type) => {
     setCurrentLanguageSelection(type);
     setShowLanguages(true);
@@ -27,7 +29,10 @@ const TranslatorApp = ({ onClose }) => {
 
   const handleInputChange = (e) =>{
     const value =e.target.value
+    if(value.length <= maxChars){
     setInputText(value)
+  setCharCount(value.length)
+    }
   }
   const handleTranslate = async () => {
     if (!inputText.trim()) {
@@ -78,7 +83,7 @@ const TranslatorApp = ({ onClose }) => {
       )}
       <div className="w-full relative">
         <textarea className="textarea text-gray-200" value={inputText || ""} onChange={handleInputChange}></textarea>
-        <div className="absolute bottom-2 right-4 text-gray-400">0/200</div>
+        <div className="absolute bottom-2 right-4 text-gray-400">{charCount}/{maxChars}</div>
       </div>
       <button className="w-12 h-12 bg-gradient-to-r from-[#b6f492] to-[#338b93] rounded-full text-2l text-gray-600 flex justify-center items-center active:translate-y-[1px]" onClick={handleTranslate}>
         <i className="fa-solid fa-chevron-down"></i>
