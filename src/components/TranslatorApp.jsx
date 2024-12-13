@@ -1,5 +1,5 @@
 import { languages } from "../languagesData";
-import { useState } from "react";
+import { useState , useRef, useEffect} from "react";
 const TranslatorApp = ({ onClose }) => {
   const [selectedLanguageFrom, setSelectedLanguageFrom] = useState('en');
   const [selectedLanguageTo, setSelectedLanguageTo] = useState('en');
@@ -10,6 +10,23 @@ const TranslatorApp = ({ onClose }) => {
   const [translatedText, setTranslatedText] = useState('');
   const [charCount , setCharCount] = useState(0)
   const maxChars = 200
+  const dropDownRef = useRef(null)
+
+  const handleClickOutside = (e) =>{
+  if(dropDownRef.current && !dropDownRef.current.contains(e.target)){
+    setShowLanguages(false)
+  }
+  }
+  useEffect(() => {
+  if(showLanguages){
+    document.addEventListener('mouseDown',handleClickOutside)
+  }else{
+    document.removeEventListener('mouseDown',handleClickOutside)
+  }
+  return () =>{
+    document.removeEventListener('mouseDown',handleClickOutside)
+  }
+  } , [showLanguages])
   const handleLanguageClick = (type) => {
     setCurrentLanguageSelection(type);
     setShowLanguages(true);
@@ -40,11 +57,17 @@ const TranslatorApp = ({ onClose }) => {
       return;
     }
     const response = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText,)}&langpair=${selectedLanguageFrom}|${selectedLanguageTo},`
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText,)}&langpair=${selectedLanguageFrom}|${selectedLanguageTo}`
     );
     const data = await response.json()
     setTranslatedText(data.responseData.translatedText)
   };
+  const handleKeyDown = (e) =>{
+    if(e.key === "Enter"){
+      e.preventDefault()
+      handleTranslate()
+    }
+  }
   return (
     <div className="w-full flex flex-col gap-y-4 justify-center items-center px-8 pt-12 pb-6 relative">
       <button className="absolute top-4 right-4 ">
@@ -66,7 +89,7 @@ const TranslatorApp = ({ onClose }) => {
         </div>
       </div>
       {showLanguages && (
-        <div className="w-[calc(100%-4rem)] h-[calc(100%-9rem)] bg-gradient-to-r from-[#b6f492] to-[#338b93] absolute top-32 left-8 z-10 rounded shadow-lg p-4 overflow-y-scroll scrollbar-hide">
+        <div className="w-[calc(100%-4rem)] h-[calc(100%-9rem)] bg-gradient-to-r from-[#b6f492] to-[#338b93] absolute top-32 left-8 z-10 rounded shadow-lg p-4 overflow-y-scroll scrollbar-hide" ref={dropDownRef}>
           <ul>
             {Object.entries(languages).map(([code, name]) => (
               <li
@@ -82,7 +105,7 @@ const TranslatorApp = ({ onClose }) => {
         </div>
       )}
       <div className="w-full relative">
-        <textarea className="textarea text-gray-200" value={inputText || ""} onChange={handleInputChange}></textarea>
+        <textarea className="textarea text-gray-200" value={inputText || ""} onChange={handleInputChange} onKeyDown={handleKeyDown}></textarea>
         <div className="absolute bottom-2 right-4 text-gray-400">{charCount}/{maxChars}</div>
       </div>
       <button className="w-12 h-12 bg-gradient-to-r from-[#b6f492] to-[#338b93] rounded-full text-2l text-gray-600 flex justify-center items-center active:translate-y-[1px]" onClick={handleTranslate}>
