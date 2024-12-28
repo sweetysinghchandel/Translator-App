@@ -61,6 +61,9 @@ const TranslatorApp = ({ onClose }) => {
     );
     const data = await response.json()
     setTranslatedText(data.responseData.translatedText)
+    
+    
+  
   };
   const handleKeyDown = (e) =>{
     if(e.key === "Enter"){
@@ -69,7 +72,7 @@ const TranslatorApp = ({ onClose }) => {
     }
   }
   return (
-    <div className="w-full flex flex-col gap-y-4 justify-center items-center px-8 pt-12 pb-6 relative">
+    <div className="w-full flex flex-col gap-y-4 justify-center items-center px-6 sm:px-8 pt-12 pb-6 relative">
       <button className="absolute top-4 right-4 ">
         <i
           className="fa-solid fa-xmark text-xl text-gray-300"
